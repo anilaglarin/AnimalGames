@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: dc2345572de2fd54ab0a124061bf0138
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 208164
+  packageName: Animal Cube (Cat Series) - 2D Asset
+  packageVersion: 1.2
+  assetPath: Assets/Hisa Cube Animal/Demo/Script/CubeShow.cs
+  uploadId: 606655
