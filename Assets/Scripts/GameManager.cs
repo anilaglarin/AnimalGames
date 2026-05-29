@@ -15,6 +15,14 @@ public class GameManager : MonoBehaviour
     public float timeRemaining = 30f;
     public bool isGameOver = false;
 
+    [Header("Zorluk Ayarlarý")]
+    public float currentFireRate = 0.5f; 
+
+    [Header("Ses Ayarlarý (Yeni)")]
+    public AudioClip backgroundMusic; // Müfettiþ paneline (Inspector) atayacaðýn müzik
+    public AudioClip explosionSFX;    // Müfettiþ paneline atayacaðýn pop sesi
+    private AudioSource audioSource;   // Sesleri fiziksel olarak çalacak bileþen
+
     void Awake()
     {
         if (Instance == null)
@@ -25,11 +33,18 @@ public class GameManager : MonoBehaviour
         else { Destroy(gameObject); return; }
 
         highScore = PlayerPrefs.GetInt("HighScore", 0);
+
+        // --- SES SÝSTEMÝNÝ BAÞLATMA ---
+        // GameManager objesine otomatik olarak bir AudioSource bileþeni takýyoruz
+        audioSource = gameObject.AddComponent<AudioSource>();
+        PlayBackgroundMusic();
     }
 
     void Update()
     {
         if (isGameOver) return;
+
+        if (SceneManager.GetActiveScene().name != "GameScene") return;
 
         if (timeRemaining > 0)
         {
@@ -39,6 +54,27 @@ public class GameManager : MonoBehaviour
         else
         {
             GameOver();
+        }
+    }
+
+    // --- YENÝ SES FONKSÝYONLARI ---
+    void PlayBackgroundMusic()
+    {
+        if (backgroundMusic != null && audioSource != null)
+        {
+            audioSource.clip = backgroundMusic;
+            audioSource.loop = true;      // Müzik bittikten sonra sürekli baþa sarar
+            audioSource.volume = 0.25f;   // Müziðin ses seviyesini %25 yapýyoruz
+            audioSource.Play();
+        }
+    }
+
+    public void PlayExplosionSound()
+    {
+        if (explosionSFX != null && audioSource != null)
+        {
+            // PlayOneShot, arka plan müziðini kesmeden üstüne bu ses efektini anlýk çalar
+            audioSource.PlayOneShot(explosionSFX, 0.6f); 
         }
     }
 
@@ -68,7 +104,35 @@ public class GameManager : MonoBehaviour
         timeRemaining = 30f - (level * 2f);
         if (timeRemaining < 10f) timeRemaining = 10f;
 
+        currentFireRate = Mathf.Max(0.2f, currentFireRate - 0.05f);
+
         if (UIManager.Instance != null) UIManager.Instance.ShowLevelUp(level);
+
+        // --- ENGELÝ AKTÝFLEÞTÝREN KOD ---
+        GameObject obstacle = GameObject.Find("LevelObstacle");
+        
+        if (obstacle == null)
+        {
+            GameObject basket = GameObject.Find("Basket");
+            if (basket != null)
+            {
+                Transform obstacleTransform = basket.transform.Find("LevelObstacle");
+                if (obstacleTransform != null)
+                {
+                    obstacle = obstacleTransform.gameObject;
+                }
+            }
+        }
+
+        if (obstacle != null)
+        {
+            obstacle.SetActive(true);
+            Debug.Log("Engel baþarýyla devreye sokuldu!");
+        }
+        else
+        {
+            Debug.LogWarning("LevelObstacle isimli obje sahnede bulunamadý! Adýný kontrol et.");
+        }
     }
 
     public void GameOver()
@@ -78,23 +142,28 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("GameOver");
     }
 
-    // --- EKSÝK OLAN VE HATAYA SEBEP OLAN KISIMLAR BURASIYDI, EKLEDÝM: ---
-
     public void RestartGame()
     {
         score = 0;
         level = 1;
         targetScore = 50;
         timeRemaining = 30f;
+        currentFireRate = 0.5f;
         isGameOver = false;
-        SceneManager.LoadScene("GameScene"); // Sahne adýnýn doðruluðundan emin ol
+        SceneManager.LoadScene("GameScene");
+        
+        // Oyun yeniden baþlayýnca müziði de en baþtan tetikliyoruz
+        PlayBackgroundMusic(); 
     }
 
     public void GoToMainMenu()
     {
         score = 0;
         level = 1;
+        targetScore = 50;
+        timeRemaining = 30f;
+        currentFireRate = 0.5f;
         isGameOver = false;
-        SceneManager.LoadScene("MainMenu"); // Sahne adýnýn doðruluðundan emin ol
+        SceneManager.LoadScene("MainMenu");
     }
 }
