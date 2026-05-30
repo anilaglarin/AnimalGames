@@ -61,6 +61,10 @@ public class Animal : MonoBehaviour
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.AddScore(matchingAnimals.Count * 10);
+
+                // --- SESÝ TETÝKLEYEN ADIM (YENÝ) ---
+                // Kediler 3'lenip patladýðý an GameManager'a ses emri gidiyor.
+                GameManager.Instance.PlayExplosionSound();
             }
 
             // 3. Her kedi için patlama efekti çýkar ve kediyi yok et

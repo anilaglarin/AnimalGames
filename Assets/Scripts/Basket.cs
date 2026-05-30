@@ -11,7 +11,7 @@ public partial class Basket : MonoBehaviour
     {
         if (GameManager.Instance.isGameOver) return;
 
-        animalsInBasket.Add(newAnimal);
+        animalsInBasket.Add(newAnimal); //aaa
         CheckMatches();
 
         // Sepet doldu mu kontrolü
