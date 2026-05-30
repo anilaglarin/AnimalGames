@@ -18,13 +18,21 @@ public class GameManager : MonoBehaviour
     [Header("Zorluk Ayarlarý")]
     public float currentFireRate = 0.5f; 
 
-    [Header("Ses Ayarlarý (Yeni)")]
-    public AudioClip backgroundMusic; // Müfettiþ paneline (Inspector) atayacaðýn müzik
-    public AudioClip explosionSFX;    // Müfettiþ paneline atayacaðýn pop sesi
-    private AudioSource audioSource;   // Sesleri fiziksel olarak çalacak bileþen
+    [Header("Ses Ayarlarý")]
+    public AudioClip backgroundMusic; 
+    public AudioClip explosionSFX;    
+    private AudioSource audioSource;   
 
     void Awake()
     {
+        /* * ARCHITECTURE NOTE: Singleton Pattern & Memory Management
+ * Oyunun merkezi yönetimini (State Machine) tekilleþtirmek ve sahneler arasý geçiþte 
+ * veri bütünlüðünü (score, level) korumak için Singleton yapýsý kurulmuþtur. 
+ * Bellekte mükerrer nesne oluþumu (Memory Leak) else bloðundaki Destroy ile engellenmiþtir.
+ * Kalýcý veriler PlayerPrefs ile lokal diske iþlenirken, AudioSource bileþeni 
+ * çalýþma zamanýnda (Runtime) dinamik olarak enjekte edilerek (Dependency Injection) otomasyon saðlanmýþtýr.
+ */
+
         if (Instance == null)
         {
             Instance = this;
@@ -32,15 +40,23 @@ public class GameManager : MonoBehaviour
         }
         else { Destroy(gameObject); return; }
 
-        highScore = PlayerPrefs.GetInt("HighScore", 0);
+        highScore = PlayerPrefs.GetInt("HighScore", 0); //kalýcý hafýzadan en yüksek skorun okunmasý 
 
         // --- SES SÝSTEMÝNÝ BAÞLATMA ---
-        // GameManager objesine otomatik olarak bir AudioSource bileþeni takýyoruz
+        
         audioSource = gameObject.AddComponent<AudioSource>();
         PlayBackgroundMusic();
     }
 
     void Update()
+    /* * SYSTEM NOTE: Game Loop Control & DeltaTime Timer Pipeline
+* Her frame'de tetiklenen ana oyun döngüsüdür (Game Loop). 
+* "Early Return" (Erken Dönüþ) tekniði kullanýlarak oyun bittiðinde veya oyuncu farklý sahnedeyken 
+* gereksiz iþlemci (CPU) tüketimi engellenmiþtir. 
+* Zaman sayacý, donaným kare hýzýndan (FPS) baðýmsýz kararlý çalýþmasý için 'Time.deltaTime' ile lineer olarak düþürülür.
+* Veri akýþý, Singleton üzerinden UIManager'a güvenli (null-check kontrollü) þekilde aktarýlýr.
+*/
+
     {
         if (isGameOver) return;
 
@@ -57,7 +73,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // --- YENÝ SES FONKSÝYONLARI ---
+    //ses fonksiyonlarý 
     void PlayBackgroundMusic()
     {
         if (backgroundMusic != null && audioSource != null)
