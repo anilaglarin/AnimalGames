@@ -1120,7 +1120,6 @@ MonoBehaviour:
   spawnPoint: {fileID: 196643452}
   minX: -3.5
   maxX: 3.5
-  fireRate: 0.5
   maxSpamClickCount: 4
   penaltyDuration: 2
   spamTimeWindow: 0.25

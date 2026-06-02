@@ -3,17 +3,20 @@ using TMPro;
 
 public class UIManager : MonoBehaviour
 {
-    public static UIManager Instance;
+    public static UIManager Instance { get; private set; }
 
-    public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI highScoreText;
-    public TextMeshProUGUI timerText; // Zamaný gösteren yazý
-    public TextMeshProUGUI targetText; // Hedef skoru gösteren yazý
-    public TextMeshProUGUI levelText; // Yeni: Kenarda level yazacak olan metin
+    [Header("Arayüz Metinleri")]
+    [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI highScoreText;
+    [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private TextMeshProUGUI targetText;
+    [SerializeField] private TextMeshProUGUI levelText;
 
     void Awake()
     {
-        Instance = this;
+        // Sahnede birden fazla UI Manager olmasýný engelliyoruz
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     void Start()
@@ -25,31 +28,27 @@ public class UIManager : MonoBehaviour
     {
         if (GameManager.Instance == null) return;
 
-        if (scoreText != null) scoreText.text = "Skor: " + GameManager.Instance.score;
-        if (highScoreText != null) highScoreText.text = "Max: " + GameManager.Instance.highScore;
-        if (targetText != null) targetText.text = "Hedef: " + GameManager.Instance.targetScore;
-
-        // --- LEVEL YAZISINI BURADA GÜNCELLÝYORUZ ---
-        if (levelText != null) levelText.text = "Level: " + GameManager.Instance.level;
+        if (scoreText != null) scoreText.text = "Skor: " + GameManager.Instance.score.ToString();
+        if (highScoreText != null) highScoreText.text = "Max: " + GameManager.Instance.highScore.ToString();
+        if (targetText != null) targetText.text = "Hedef: " + GameManager.Instance.targetScore.ToString();
+        if (levelText != null) levelText.text = "Level: " + GameManager.Instance.level.ToString();
     }
 
     public void UpdateTimerUI(float time)
     {
         if (timerText != null)
         {
-            // Zamaný saniye cinsinden yazdýrýr
             timerText.text = "Süre: " + Mathf.CeilToInt(time).ToString() + "s";
 
-            // Süre 5 saniyenin altýna düþerse rengi kýrmýzý yap (Dikkat çeksin!)
-            if (time <= 5f) timerText.color = Color.red;
-            else timerText.color = Color.white;
+            // Süre azaldýðýnda oyuncuyu uyaralým
+            timerText.color = time <= 5f ? Color.red : Color.white;
         }
     }
 
     public void ShowLevelUp(int level)
     {
-        Debug.Log("YENÝ LEVEL: " + level);
-        // Buraya ileride ekranda "Level Up!" animasyonunu tetikleyecek kod gelebilir
+        Debug.Log("Yeni levele geçildi: " + level);
+        // Ýleride buraya UI animasyonlarý veya pop-up eklenebilir
         UpdateScoreUI();
     }
 }

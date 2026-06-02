@@ -3,69 +3,80 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    public static GameManager Instance { get; private set; }
 
     [Header("Skor Ayarlarý")]
-    public int score = 0;
-    public int highScore = 0;
-    public int level = 1;
-    public int targetScore = 50;
+    public int score { get; private set; } = 0;
+    public int highScore { get; private set; } = 0;
+    public int level { get; private set; } = 1;
+    public int targetScore { get; private set; } = 50;
 
     [Header("Zaman Ayarlarý")]
-    public float timeRemaining = 30f;
-    public bool isGameOver = false;
+    public float timeRemaining { get; private set; } = 30f;
+    public bool isGameOver { get; private set; } = false;
 
     [Header("Zorluk Ayarlarý")]
-    public float currentFireRate = 0.5f; 
+    public float currentFireRate { get; private set; } = 0.5f;
 
     [Header("Ses Ayarlarý")]
-    public AudioClip backgroundMusic; 
-    public AudioClip explosionSFX;    
-    private AudioSource audioSource;   
+    [SerializeField] private AudioClip backgroundMusic;
+    [SerializeField] private AudioClip explosionSFX;
+
+    private AudioSource audioSource;
+    private bool isGameActive = false; 
 
     void Awake()
     {
-        /* * ARCHITECTURE NOTE: Singleton Pattern & Memory Management
- * Oyunun merkezi yönetimini (State Machine) tekilleþtirmek ve sahneler arasý geçiþte 
- * veri bütünlüðünü (score, level) korumak için Singleton yapýsý kurulmuþtur. 
- * Bellekte mükerrer nesne oluþumu (Memory Leak) else bloðundaki Destroy ile engellenmiþtir.
- * Kalýcý veriler PlayerPrefs ile lokal diske iþlenirken, AudioSource bileþeni 
- * çalýþma zamanýnda (Runtime) dinamik olarak enjekte edilerek (Dependency Injection) otomasyon saðlanmýþtýr.
- */
-
+        // Singleton Pattern 
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
-        else { Destroy(gameObject); return; }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
 
-        highScore = PlayerPrefs.GetInt("HighScore", 0); //kalýcý hafýzadan en yüksek skorun okunmasý 
-
-        // --- SES SÝSTEMÝNÝ BAÞLATMA ---
         
+        highScore = PlayerPrefs.GetInt("HighScore", 0);
+
+        // Ses sistemini dinamik olarak baþlatma
         audioSource = gameObject.AddComponent<AudioSource>();
         PlayBackgroundMusic();
     }
 
-    void Update()
-    /* * SYSTEM NOTE: Game Loop Control & DeltaTime Timer Pipeline
-* Her frame'de tetiklenen ana oyun döngüsüdür (Game Loop). 
-* "Early Return" (Erken Dönüþ) tekniði kullanýlarak oyun bittiðinde veya oyuncu farklý sahnedeyken 
-* gereksiz iþlemci (CPU) tüketimi engellenmiþtir. 
-* Zaman sayacý, donaným kare hýzýndan (FPS) baðýmsýz kararlý çalýþmasý için 'Time.deltaTime' ile lineer olarak düþürülür.
-* Veri akýþý, Singleton üzerinden UIManager'a güvenli (null-check kontrollü) þekilde aktarýlýr.
-*/
-
+    private void OnDestroy()
     {
-        if (isGameOver) return;
+        //bellek sýzýntýsýný önlemek için 
+        if (Instance == this)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+    }
 
-        if (SceneManager.GetActiveScene().name != "GameScene") return;
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Sadece GameScene içindeysek oyun döngüsünü (Update) aktif et
+        isGameActive = (scene.name == "GameScene");
+    }
+
+    void Update()
+    {
+        
+        if (isGameOver || !isGameActive) return;
 
         if (timeRemaining > 0)
         {
             timeRemaining -= Time.deltaTime;
-            if (UIManager.Instance != null) UIManager.Instance.UpdateTimerUI(timeRemaining);
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.UpdateTimerUI(timeRemaining);
+            }
         }
         else
         {
@@ -73,14 +84,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //ses fonksiyonlarý 
-    void PlayBackgroundMusic()
+    // --- SES FONKSÝYONLARI ---
+
+    private void PlayBackgroundMusic()
     {
         if (backgroundMusic != null && audioSource != null)
         {
             audioSource.clip = backgroundMusic;
-            audioSource.loop = true;      // Müzik bittikten sonra sürekli baþa sarar
-            audioSource.volume = 0.25f;   // Müziðin ses seviyesini %25 yapýyoruz
+            audioSource.loop = true;
+            audioSource.volume = 0.25f;
             audioSource.Play();
         }
     }
@@ -89,14 +101,17 @@ public class GameManager : MonoBehaviour
     {
         if (explosionSFX != null && audioSource != null)
         {
-            // PlayOneShot, arka plan müziðini kesmeden üstüne bu ses efektini anlýk çalar
-            audioSource.PlayOneShot(explosionSFX, 0.6f); 
+            // Arka plan müziðini kesmeden efekti anlýk çalar
+            audioSource.PlayOneShot(explosionSFX, 0.6f);
         }
     }
+
+    // --- OYUN MEKANÝKLERÝ ---
 
     public void AddScore(int amount)
     {
         if (isGameOver) return;
+
         score += amount;
 
         if (score > highScore)
@@ -113,20 +128,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void LevelUp()
+    private void LevelUp()
     {
         level++;
         targetScore += 100;
-        timeRemaining = 30f - (level * 2f);
-        if (timeRemaining < 10f) timeRemaining = 10f;
-
+        timeRemaining = Mathf.Max(10f, 30f - (level * 2f)); 
         currentFireRate = Mathf.Max(0.2f, currentFireRate - 0.05f);
 
         if (UIManager.Instance != null) UIManager.Instance.ShowLevelUp(level);
 
-        // --- ENGELÝ AKTÝFLEÞTÝREN KOD ---
+        ActivateLevelObstacle();
+    }
+
+    private void ActivateLevelObstacle()
+    {
+        //engel arama 
         GameObject obstacle = GameObject.Find("LevelObstacle");
-        
+
         if (obstacle == null)
         {
             GameObject basket = GameObject.Find("Basket");
@@ -147,9 +165,11 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("LevelObstacle isimli obje sahnede bulunamadý! Adýný kontrol et.");
+            Debug.LogWarning("LevelObstacle isimli obje sahnede bulunamadý! Adýný kontrol edebilir misin?");
         }
     }
+
+    // --- SAHNE VE DURUM KONTROLLERÝ ---
 
     public void GameOver()
     {
@@ -160,26 +180,25 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        score = 0;
-        level = 1;
-        targetScore = 50;
-        timeRemaining = 30f;
-        currentFireRate = 0.5f;
-        isGameOver = false;
+        ResetGameState();
         SceneManager.LoadScene("GameScene");
-        
-        // Oyun yeniden baþlayýnca müziði de en baþtan tetikliyoruz
-        PlayBackgroundMusic(); 
+        PlayBackgroundMusic();
     }
 
     public void GoToMainMenu()
     {
+        ResetGameState();
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    private void ResetGameState()
+    {
+        // Kod tekrarýný (DRY Prensibi) önlemek için sýfýrlama iþlemlerini tek yerde topladýk
         score = 0;
         level = 1;
         targetScore = 50;
         timeRemaining = 30f;
         currentFireRate = 0.5f;
         isGameOver = false;
-        SceneManager.LoadScene("MainMenu");
     }
 }
