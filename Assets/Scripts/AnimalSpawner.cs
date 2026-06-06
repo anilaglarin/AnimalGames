@@ -9,7 +9,7 @@ public class AnimalSpawner : MonoBehaviour
     [Header("Sýnýr Ayarlarý")]
     [SerializeField] private float minX = -3.5f;
     [SerializeField] private float maxX = 3.5f;
-    //SerializeField private kalýr ama arayüze yansýr 
+    
     [Header("Makro / Spam Engelleme Sistemi")]
     [Tooltip("Oyuncu kaç defa hýzlýca basarsa cezalandýrýlsýn?")]
     [SerializeField] private int maxSpamClickCount = 4;
@@ -64,7 +64,7 @@ public class AnimalSpawner : MonoBehaviour
             }
         }
 
-        // 1. Fare konumunu takip et (Önbelleðe alýnmýþ kamera ile)
+        // 1. Fare konumunu takip et (Önbelleðe alýnmýþ kamera ile------>optimizasyon için)
         Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         float clampedX = Mathf.Clamp(mousePosition.x, minX, maxX);
         Vector3 targetPos = new Vector3(clampedX, spawnPoint.position.y, 0);

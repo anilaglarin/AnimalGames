@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CameraShake : MonoBehaviour
 {
-    // Kapsülleme: Instance dýþarýdan okunabilir ama sadece içeriden yazýlabilir.
+    
     public static CameraShake Instance { get; private set; }
 
     private Vector3 originalPos;
@@ -24,21 +24,21 @@ public class CameraShake : MonoBehaviour
         }
     }
 
-    // Dýþarýdan diðer scriptlerin çaðýracaðý GÜVENLÝ tetikleyici metodumuz
+   
     public void TriggerShake(float duration, float magnitude)
     {
         // Eðer halihazýrda devam eden bir sarsýntý varsa, kameranýn sapýtmamasý için onu durduruyoruz.
         if (currentShakeCoroutine != null)
         {
             StopCoroutine(currentShakeCoroutine);
-            transform.localPosition = originalPos; // Kamerayý hemen merkeze çek
+            transform.localPosition = originalPos; 
         }
 
-        // Sarsýntýyý artýk CameraShake'in kendisi baþlatýyor (Böylece kedi silinse de sarsýntý devam eder)
+        
         currentShakeCoroutine = StartCoroutine(ShakeRoutine(duration, magnitude));
     }
 
-    // Arka planda çalýþan asýl sarsýntý motoru (Dýþarýya kapalý)
+    
     private IEnumerator ShakeRoutine(float duration, float magnitude)
     {
         float elapsed = 0.0f;
@@ -54,8 +54,8 @@ public class CameraShake : MonoBehaviour
             yield return null;
         }
 
-        // Sarsýntý bitince kamerayý orijinal yerine mükemmel bir þekilde geri oturt
+        //sarsýntý bitince kamera eski yerine oturmasý için 
         transform.localPosition = originalPos;
-        currentShakeCoroutine = null; // Ýþlem bitti, temizlik yapýldý
+        currentShakeCoroutine = null; 
     }
 }

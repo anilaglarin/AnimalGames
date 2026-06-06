@@ -26,10 +26,10 @@ public class Animal : MonoBehaviour
 
     void Update()
     {
-        // 1. Oyun bittiyse fiziksel iþlemleri ve hesaplamalarý durdur.
+        
         if (GameManager.Instance != null && GameManager.Instance.isGameOver) return;
 
-        // 2. Çöp Toplayýcý (Garbage Collection): Ekrandan düþen objeleri bellekten sil.
+        //ekrandan düþen objeleri bellekten siler 
         if (transform.position.y < -6f)
         {
             Destroy(gameObject);
@@ -59,20 +59,20 @@ public class Animal : MonoBehaviour
 
         if (matchingAnimals.Count >= 3)
         {
-            // 1. Ekraný Salla (Juice Effect)
+            
             if (CameraShake.Instance != null)
             {
                 CameraShake.Instance.TriggerShake(0.15f, 0.2f);
             }
 
-            // 2. Skoru Ekle ve Sesi Çal
+            
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.AddScore(matchingAnimals.Count * 10);
                 GameManager.Instance.PlayExplosionSound();
             }
 
-            // 3. Eþleþen tüm kedileri döngüyle patlat ve bellekten (RAM) sil
+            // Eþleþen tüm kedileri döngüyle patlat ve bellekten (RAM) sil
             foreach (GameObject obj in matchingAnimals)
             {
                 if (obj != null)
@@ -82,7 +82,7 @@ public class Animal : MonoBehaviour
                     {
                         animScript.IsMatched = true; // Tekrar döngüye girmesini engeller (Infinite Loop Korumasý)
 
-                        // Partikül Efektini Yarat
+                        //pataldaðý zaman efeketi yaratýr 
                         if (explosionPrefab != null)
                         {
                             Instantiate(explosionPrefab, obj.transform.position, Quaternion.identity);

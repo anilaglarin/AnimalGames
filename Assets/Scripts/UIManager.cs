@@ -14,7 +14,7 @@ public class UIManager : MonoBehaviour
 
     void Awake()
     {
-        // Sahnede birden fazla UI Manager olmasýný engelliyoruz
+        // Sahnede birden fazla UI Manager olmasýný engelliyoruz,Singleton Pattern 
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }

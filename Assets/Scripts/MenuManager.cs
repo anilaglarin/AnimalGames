@@ -28,6 +28,17 @@ public class MenuManager : MonoBehaviour
     // --- UI Buton Fonksiyonlarý ---
     // Unity'deki butonlardan çaðrýlacaðý için public býrakýyoruz.
 
+    public void ResetHighScore()
+    {
+        // Sadece HighScore anahtarýný siler
+        PlayerPrefs.DeleteKey("HighScore");
+
+        // Deðiþikliði anýnda diske kaydeder
+        PlayerPrefs.Save();
+
+        Debug.Log("En yüksek skor baþarýyla sýfýrlandý!");
+    }
+
     public void PlayGame()
     {
         SceneManager.LoadScene(gameSceneName);

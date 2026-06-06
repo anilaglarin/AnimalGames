@@ -10,9 +10,9 @@ public class GameManager : MonoBehaviour
     public int highScore { get; private set; } = 0;
     public int level { get; private set; } = 1;
     public int targetScore { get; private set; } = 50;
-
+    public GameObject obstacle;
     [Header("Zaman Ayarlarý")]
-    public float timeRemaining { get; private set; } = 30f;
+    public float timeRemaining { get; private set; } = 20f;
     public bool isGameOver { get; private set; } = false;
 
     [Header("Zorluk Ayarlarý")]
@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        // Singleton Pattern 
+        // Singleton Pattern // Bellekte tek kopyayý garantiler.
         if (Instance == null)
         {
             Instance = this;
@@ -143,7 +143,7 @@ public class GameManager : MonoBehaviour
     private void ActivateLevelObstacle()
     {
         //engel arama 
-        GameObject obstacle = GameObject.Find("LevelObstacle");
+        //GameObject obstacle = GameObject.Find("LevelObstacle");
 
         if (obstacle == null)
         {

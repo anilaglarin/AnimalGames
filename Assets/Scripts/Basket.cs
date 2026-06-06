@@ -10,12 +10,12 @@ public class Basket : MonoBehaviour
     private List<Animal> animalsInBasket = new List<Animal>();
 
     
-    // Hayvan sepete girdiðinde Animal scripti tarafýndan çaðrýlýr
+    
     public void AddAnimal(Animal newAnimal)
     {
         if (GameManager.Instance != null && GameManager.Instance.isGameOver) return;
 
-        // --- ÝÞTE HAYAT KURTARAN TEMÝZLÝK SATIRI ---
+        
         // Sahneden silinmiþ ama listede yer iþgal eden "hayalet (null)" kedileri listeden atar.
         animalsInBasket.RemoveAll(animal => animal == null);
 
