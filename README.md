@@ -1,45 +1,74 @@
-# 🎮 AnimalGame - İlk Unity Mobil Oyun Projem!
+# 🎮 AnimalGame
 
-Unity oyun geliştirme dünyasına adım attığım **ilk göz ağrısı projem!** Bu çalışma, Unity 6 motorunun temel dinamiklerini, C# programlama dilinin oyun mekaniklerindeki kullanımını ve mobil platform (Android/iOS) entegrasyon süreçlerini sıfırdan öğrenmek amacıyla başlattığım kişisel gelişim yolculuğumun ilk adımıdır.
+Unity 6 ile yaptığım ilk proje — bir ders ödevi kapsamında hazırlandı. Unity'e ve C# ile oyun geliştirmeye ilk adımımı attığım, deneme amaçlı küçük bir çalışma.
 
-Bir bilgisayar mühendisliği öğrencisi olarak, teorik bilgileri pratiğe dökmek ve oyun mekanikleri tasarlamanın mantığını kavramak adına bu projeyi büyük bir motivasyonla geliştiriyorum.
-
----
-
-## 💡 Benim İçin Bu Projenin Hedefleri
-* **Sıfırdan Öğrenme:** Unity 6 arayüzüne, komponent yapısına ve oyun döngüsüne (Game Loop) hakim olmak.
-* **C# ile Oyun Programlama:** Temel C# bilgilerimi script seviyesinde oyun içi lojiklere ve mekaniklere dökmek.
-* **Mobil Deneyim:** Dokunmatik ekran kontrollerini öğrenmek ve mobil cihazlar için optimizasyon mantığını kavramak.
-* **Sürüm Kontrolü:** Projeyi baştan sona Git ve GitHub Desktop ile profesyonel standartlarda yönetmeyi alışkanlık haline getirmek.
+![Demo](demo.png)
 
 ---
 
-## 🚀 Proje Detayları & Teknolojiler
-* **Oyun Motoru:** Unity 6
-* **Kodlama Dili:** C#
-* **Hedef Platform:** Mobil (Android / iOS)
+## 🕹️ Proje Hakkında
+
+Bir bilgisayar mühendisliği ödevi olarak geliştirilen hayvan temalı basit bir Unity projesi. Amaç bir "ürün" ortaya çıkarmaktan çok, Unity motorunu ve C# ile oyun mekaniği yazmayı tanımaktı. Proje şu an **aktif olarak geliştirilmiyor** — ödev kapsamında ulaşabildiğim noktada bırakıldı.
+
+> Ekran görüntülerine `/screenshot` klasöründen ulaşabilirsin.
 
 ---
 
-## 📅 Yol Haritası & Gelişim Süreci (Ritmik Takip)
+## 💡 Bu Projeden Öğrendiklerim
 
-İlk projemi adım adım büyütürken tamamladığım ve üzerinde çalıştığım aşamaları buradan güncel tutacağım:
+- Unity 6 arayüzü, komponent yapısı ve oyun döngüsü (Game Loop) temelleri
+- C# ile script yazarak temel oyun mantığı kurma
+- Git ve GitHub ile proje/sürüm yönetimine ilk adım
+
+---
+
+## 🚀 Teknolojiler
+
+| | |
+|---|---|
+| **Oyun Motoru** | Unity 6 |
+| **Dil** | C# |
+
+---
+
+## 🛠️ Projeyi Açmak İçin
+
+1. Repoyu klonla:
+   ```bash
+   git clone https://github.com/anilaglarin/AnimalGames.git
+   ```
+2. **Unity Hub** üzerinden projeyi aç (Unity 6 sürümü kurulu olmalı).
+3. `Assets/SampleScene` sahnesini aç ve ▶️ **Play** ile test et.
+
+---
+
+## 📅 Ödev Kapsamında İzlediğim Yol Haritası
+
+Ödevi ilerletirken kendime çizdiğim fazlar ve nereye kadar gidebildiğim:
 
 - [x] **Faz 1: İlk Adım & Temeller**
-  - [x] Unity projesinin oluşturulması ve temiz bir Git yapısıyla (`.gitignore`) GitHub Desktop'a bağlanması.
-  - [x] Proje klasör hiyerarşisinin düzenlenmesi.
-  - [x] Ana sahnenin (SampleScene) ilk ayarlarının yapılması.
+  - [x] Unity projesinin oluşturulması ve `.gitignore` ile temiz bir Git yapısı kurulması
+  - [x] Proje klasör hiyerarşisinin düzenlenmesi
+  - [x] Ana sahnenin (SampleScene) ilk ayarlarının yapılması
 
-- [/] **Faz 2: Mekaniklerin Kodlanması & Karakterler**
-  - [ ] Sahneye ilk hayvan/karakter modellerinin dahil edilmesi.
-  - [ ] Mobil uyumlu temel dokunmatik (Touch) kontrol scriptlerinin yazılması.
-  - [ ] Fizik motorunu anlamak için çarpışma (Collision) ve tetiklenme (Trigger) testleri.
+- [x] **Faz 2: Mekanikler & Karakterler**
+  - [x] Sahneye ilk hayvan/karakter modellerinin dahil edilmesi
+  - [x] Temel dokunmatik (touch) kontrol scriptlerinin yazılması
+  - [x] Çarpışma (Collision) ve tetiklenme (Trigger) testleri
 
-- [ ] **Faz 3: Oyun Döngüsü & Arayüz (UI)**
-  - [ ] Skor tutma mekanizmasının ve yüksek skor kaydetme sisteminin kurulması.
-  - [ ] Ana menü, oyun içi HUD ekranı ve "Oyun Bitti" panellerinin tasarımı.
-  - [ ] Temel ses efektleri ve atmosferik müziklerin eklenmesi.
+- [x] **Faz 3: Oyun Döngüsü & Arayüz (UI)**
+  - [x] Skor tutma ve yüksek skor kaydetme sistemi
+  - [x] Ana menü, oyun içi HUD ve "Oyun Bitti" panelleri
+  - [x] Temel ses efektleri ve müzik
 
 - [ ] **Faz 4: Test ve Dağıtım**
-  - [ ] Mobil cihazlarda performans testleri (FPS ve bellek takibi).
-  - [ ] Google Play Store standartlarına uygun APK/AAB çıktılarının alınması.
+  - [ ] Performans testleri
+  - [ ] Paketleme / dışa aktarma
+
+Ödev, Faz 3'e kadar olan kısımlar tamamlanarak teslim edildi. Faz 4 (test ve dağıtım) yapılmadı — proje istenirse ileride daha da geliştirilebilir.
+
+---
+
+## 📄 Not
+
+Bu proje bir okul ödevi olarak hazırlanmıştır, ticari veya yayınlanmış bir ürün değildir.
